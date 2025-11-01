@@ -87,7 +87,7 @@ export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
       onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="border-2 border-gray-700 rounded-lg"
+      className="pixel-borders rounded-lg"
       style={{
         cursor: cooldown === 0 && playerTeam > 0 ? 'crosshair' : 'not-allowed',
         imageRendering: 'pixelated',

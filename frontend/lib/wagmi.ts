@@ -1,9 +1,9 @@
 import { http, createConfig } from 'wagmi'
-import { injected, metaMask } from 'wagmi/connectors'
+import { injected, metaMask, coinbaseWallet } from 'wagmi/connectors'
 
 // Monad Testnet configuration
 export const monadTestnet = {
-  id: 41454,
+  id: 10143,
   name: 'Monad Testnet',
   network: 'monad-testnet',
   nativeCurrency: {
@@ -24,8 +24,11 @@ export const monadTestnet = {
 export const config = createConfig({
   chains: [monadTestnet],
   connectors: [
-    injected(),
+    injected(), // Any injected wallet (MetaMask, Rabby, etc.)
     metaMask(),
+    coinbaseWallet({
+      appName: 'Primordial MVP',
+    }),
   ],
   transports: {
     [monadTestnet.id]: http(),

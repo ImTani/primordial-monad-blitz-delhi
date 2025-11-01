@@ -9,40 +9,60 @@ interface TeamSelectionProps {
 
 export function TeamSelection({ onSelectTeam, loading }: TeamSelectionProps) {
   return (
-    <div className="max-w-2xl mx-auto text-center space-y-8">
-      <div>
-        <h2 className="text-4xl font-bold mb-4">Choose Your Element</h2>
-        <p className="text-gray-400">Join a team and start claiming territory</p>
+    <div className="max-w-3xl mx-auto text-center space-y-8 slide-in">
+      <div className="pixel-borders bg-[#1a1a2e] p-8 rounded-lg">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4 tracking-wider">SELECT ELEMENT</h2>
+        <p className="text-xs text-gray-400 uppercase tracking-widest">Choose your faction</p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {[1, 2, 3].map((teamId) => (
           <button
             key={teamId}
             onClick={() => onSelectTeam(teamId)}
             disabled={loading}
-            className="px-8 py-6 rounded-xl font-bold text-2xl transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`pixel-borders p-6 rounded-lg font-bold text-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group ${
+              teamId === 1 ? 'glow-fire' : teamId === 2 ? 'glow-water' : 'glow-plant'
+            }`}
             style={{
               backgroundColor: TEAM_COLORS[teamId as keyof typeof TEAM_COLORS],
+              textShadow: '2px 2px 0px rgba(0,0,0,0.8)'
             }}
           >
-            {TEAM_EMOJI[teamId as keyof typeof TEAM_EMOJI]}{' '}
-            {TEAM_NAMES[teamId as keyof typeof TEAM_NAMES]}
+            <div className="relative z-10">
+              <div className="text-5xl mb-3">{TEAM_EMOJI[teamId as keyof typeof TEAM_EMOJI]}</div>
+              <div className="text-sm tracking-widest uppercase">
+                {TEAM_NAMES[teamId as keyof typeof TEAM_NAMES]}
+              </div>
+            </div>
+            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
           </button>
         ))}
       </div>
 
-      <div className="bg-gray-900 p-6 rounded-xl text-left space-y-3">
-        <h3 className="text-xl font-bold mb-4">Rules:</h3>
-        <p className="text-lg">🔥 Fire burns 🌱 Plant</p>
-        <p className="text-lg">💧 Water extinguishes 🔥 Fire</p>
-        <p className="text-lg">🌱 Plant absorbs 💧 Water</p>
-        <p className="text-gray-400 mt-4">
-          Empty cells with 3+ neighbors spawn that element
-        </p>
-        <p className="text-gray-400">
-          Cells with 3+ counter-element neighbors get converted
-        </p>
+      <div className="pixel-borders bg-black/50 p-6 rounded-lg text-left space-y-3 text-xs">
+        <h3 className="text-lg font-bold mb-4 text-center tracking-wider">⚔️ COMBAT RULES</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <p className="flex items-center gap-2">
+            <span className="text-2xl">🔥</span>
+            <span className="text-gray-400">BURNS</span>
+            <span className="text-2xl">🌱</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <span className="text-2xl">💧</span>
+            <span className="text-gray-400">QUENCHES</span>
+            <span className="text-2xl">🔥</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <span className="text-2xl">🌱</span>
+            <span className="text-gray-400">ABSORBS</span>
+            <span className="text-2xl">💧</span>
+          </p>
+        </div>
+        <div className="border-t border-gray-700 pt-3 mt-3 space-y-2">
+          <p className="text-gray-400">• 3+ neighbors → Cell spawns</p>
+          <p className="text-gray-400">• 3+ counters → Cell converts</p>
+        </div>
       </div>
     </div>
   )
