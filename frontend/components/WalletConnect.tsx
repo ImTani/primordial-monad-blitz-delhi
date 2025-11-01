@@ -46,8 +46,8 @@ export function WalletConnect() {
 
   if (isConnected && address) {
     return (
-      <div className="flex flex-col items-end gap-2">
-        <div className="flex items-center gap-4 pixel-borders bg-[#1a1a2e] px-4 py-2 rounded-lg">
+      <div className="flex flex-col items-center sm:items-end gap-3">
+        <div className="flex items-center gap-3 pixel-borders bg-[#1a1a2e] px-5 py-3 rounded-lg">
           {chain && (
             <p className="text-xs text-gray-400 uppercase tracking-wide">
               {chain.name}
@@ -58,20 +58,20 @@ export function WalletConnect() {
           </p>
           <button
             onClick={() => disconnect()}
-            className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs font-bold uppercase tracking-wide transition-colors"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-xs font-bold uppercase tracking-wide transition-all hover:scale-105"
           >
             Disconnect
           </button>
         </div>
         {isWrongNetwork && (
-          <div className="flex flex-col items-end gap-2 slide-in">
-            <div className="px-3 py-2 bg-yellow-900/50 border-2 border-yellow-600 rounded text-yellow-200 text-xs pixel-borders uppercase tracking-wide">
+          <div className="flex flex-col items-center sm:items-end gap-3 slide-in">
+            <div className="px-4 py-3 bg-yellow-900/50 border-2 border-yellow-600 rounded text-yellow-200 text-xs pixel-borders uppercase tracking-wide text-center">
               ⚠️ Wrong Network: {chain?.name || 'Unknown'}
             </div>
             <button
               onClick={handleManualSwitch}
               disabled={isSwitching}
-              className="pixel-borders px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:scale-105"
+              className="pixel-borders px-6 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 rounded-lg text-xs font-bold uppercase tracking-wider transition-all hover:scale-105"
             >
               {isSwitching ? 'Switching...' : 'Switch to Monad'}
             </button>
@@ -82,13 +82,13 @@ export function WalletConnect() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Connect Wallet:</p>
+    <div className="flex flex-col gap-3 items-center sm:items-end">
+      <p className="text-xs text-gray-400 uppercase tracking-wider">Connect Wallet:</p>
       {connectors.map((connector) => (
         <button
           key={connector.id}
           onClick={() => connect({ connector, chainId: monadTestnet.id })}
-          className="pixel-borders px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold transition-all hover:scale-105 text-sm uppercase tracking-wider"
+          className="pixel-borders px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold transition-all hover:scale-105 text-xs uppercase tracking-wider w-full sm:w-auto min-w-[200px]"
         >
           {connector.name}
         </button>

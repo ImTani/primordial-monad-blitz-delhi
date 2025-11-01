@@ -13,7 +13,8 @@ interface GridProps {
 export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null)
-  const CELL_SIZE = 30
+  const CELL_SIZE = 28
+  const BORDER_WIDTH = 1
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -22,6 +23,9 @@ export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
     const ctx = canvas.getContext('2d')!
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    // Enable crisp pixel rendering
+    ctx.imageSmoothingEnabled = false
+
     // Draw cells
     for (let x = 0; x < GRID_SIZE; x++) {
       for (let y = 0; y < GRID_SIZE; y++) {
@@ -29,7 +33,12 @@ export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
 
         // Cell background
         ctx.fillStyle = TEAM_COLORS[cellType as keyof typeof TEAM_COLORS]
-        ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        ctx.fillRect(
+          x * CELL_SIZE + BORDER_WIDTH,
+          y * CELL_SIZE + BORDER_WIDTH,
+          CELL_SIZE - BORDER_WIDTH * 2,
+          CELL_SIZE - BORDER_WIDTH * 2
+        )
 
         // Hover preview
         if (
@@ -39,19 +48,41 @@ export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
           cooldown === 0 &&
           playerTeam > 0
         ) {
-          ctx.fillStyle = TEAM_COLORS[playerTeam as keyof typeof TEAM_COLORS] + '80'
-          ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+          ctx.fillStyle = TEAM_COLORS[playerTeam as keyof typeof TEAM_COLORS] + 'CC'
+          ctx.fillRect(
+            x * CELL_SIZE + BORDER_WIDTH,
+            y * CELL_SIZE + BORDER_WIDTH,
+            CELL_SIZE - BORDER_WIDTH * 2,
+            CELL_SIZE - BORDER_WIDTH * 2
+          )
+          
+          // Pulse border on hover
+          ctx.strokeStyle = '#ffffff'
+          ctx.lineWidth = 2
+          ctx.strokeRect(
+            x * CELL_SIZE,
+            y * CELL_SIZE,
+            CELL_SIZE,
+            CELL_SIZE
+          )
         }
 
-        // Grid lines
-        ctx.strokeStyle = '#333'
-        ctx.lineWidth = 1
+        // Grid lines (pixel-perfect)
+        ctx.strokeStyle = '#0f0f23'
+        ctx.lineWidth = BORDER_WIDTH
         ctx.strokeRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
       }
     }
+
+    // Outer border
+    ctx.strokeStyle = '#2d3748'
+    ctx.lineWidth = 3
+    ctx.strokeRect(0, 0, canvas.width, canvas.height)
   }, [grid, hoveredCell, playerTeam, cooldown])
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (cooldown > 0 || playerTeam === 0) return
+    
     const rect = canvasRef.current?.getBoundingClientRect()
     if (!rect) return
 
@@ -80,18 +111,20 @@ export function Grid({ grid, onCellClick, playerTeam, cooldown }: GridProps) {
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={GRID_SIZE * CELL_SIZE}
-      height={GRID_SIZE * CELL_SIZE}
-      onClick={handleClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="pixel-borders rounded-lg"
-      style={{
-        cursor: cooldown === 0 && playerTeam > 0 ? 'crosshair' : 'not-allowed',
-        imageRendering: 'pixelated',
-      }}
-    />
+    <div className="relative">
+      <canvas
+        ref={canvasRef}
+        width={GRID_SIZE * CELL_SIZE}
+        height={GRID_SIZE * CELL_SIZE}
+        onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="rounded-lg shadow-2xl"
+        style={{
+          cursor: cooldown === 0 && playerTeam > 0 ? 'crosshair' : 'not-allowed',
+          imageRendering: 'pixelated',
+        }}
+      />
+    </div>
   )
 }
